@@ -110,10 +110,10 @@ with open('./RiderInterdependency.csv', mode='r') as csv_file:
         		print >> f3, ('\t'.expandtabs(8) + 'excludedRiders.add("'+excludedRider+'");')
 		
 		
-		print >> f3, ('\t'.expandtabs(8) + 'response.setIncludedRiders(includedRiders);' + '\n' +
-		        '\t'.expandtabs(8) + 'response.setExcludedRiders(excludedRiders);' + '\n' +
-		        '\t'.expandtabs(8) + 'rulesResponse.setRuleResponse(response);' + '\n' +
-		'end\n')
+        print >> f3, ('\t'.expandtabs(8) + 'response.setIncludedRiders(includedRiders);' + '\n' +
+                '\t'.expandtabs(8) + 'response.setExcludedRiders(excludedRiders);' + '\n' +
+                '\t'.expandtabs(8) + 'rulesResponse.setRuleResponse(response);' + '\n' +
+        'end\n')
         
 f3.close()
 
