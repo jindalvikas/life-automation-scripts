@@ -7,35 +7,57 @@ f1=open('./life_rider_validations_mashreq.java', 'w+')
 
 with open('/Users/vikas/Desktop/RiderValidationRules_mashreq.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
-    line_count = 0
+    s12 = ' ' * 12
+
+    ruleNameText = 'rule "Mashreq Rider Validation Rule - {0}, {1}, {2}, {3}"\n'
+
+    whenRuleText = """    when
+        riderRequest:RiderRequest(
+            riderRequest.getRiderCode() == "{0}" &&
+            riderRequest.getProductCode() == "{1}" &&
+            riderRequest.getOptionCode() == "{2}" &&
+            ((riderRequest.getEntryAge() >= {3}) && (riderRequest.getEntryAge() <= {4})) &&
+            ((riderRequest.getMaturityAge() >= {5}) && (riderRequest.getMaturityAge() <= {6})) &&
+            ((riderRequest.getRiderPolicyTerm() >= {7}) && (riderRequest.getRiderPolicyTerm() <= {8})) &&
+            ((riderRequest.getRiderPremiumPaymentTerm() >= {9}) && (riderRequest.getRiderPremiumPaymentTerm() <= {10})) &&
+            ((riderRequest.getRiderSumAssured() >= {11}) && (riderRequest.getRiderSumAssured() <= {12})) &&
+            riderRequest.getRiderPolicyTerm() <= riderRequest.getBasePlanPolicyTerm() &&
+            riderRequest.getRiderPremiumPaymentTerm() <= riderRequest.getBasePlanPremiumPaymentTerm() &&{13}
+            riderRequest.getCurrency() == "{14}" &&
+            riderRequest.getBroker() == "mashreq" &&
+            riderRequest.getRuleId() == "validateRiders"
+        )
+"""
+
+    thenResponse = """    then
+        ValidRiderResponse validRiderResponse = new ValidRiderResponse();
+        validRiderResponse.setRiderCode(riderRequest.getRiderCode());
+        validRiderResponse.setProductCode(riderRequest.getProductCode());
+        validRiderResponse.setOptionCode(riderRequest.getOptionCode());
+        validRiderResponse.setValid(true);
+        rulesResponse.setRuleResponse(validRiderResponse);
+end
+"""
+
     for row in csv_reader:
-        print >>f1,('rule "Mashreq Rider Validation Rule - '+row["riderCode"].strip()+', '+row["productCode"].strip()+', '+row["optionCode"].strip()+', '+row["currency"].strip()+'"' + '\n' +
-		   '\t'.expandtabs(4) + 'when' + '\n' +
-		        '\t'.expandtabs(8) + 'riderRequest:RiderRequest(' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getRiderCode() == "'+row["riderCode"].strip()+'" &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getProductCode() == "'+row["productCode"].strip()+'" &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getOptionCode() == "'+row["optionCode"].strip()+'" &&' + '\n' +
-		            '\t'.expandtabs(12) + '((riderRequest.getEntryAge() >= '+row["minEntryAge"].strip()+') && (riderRequest.getEntryAge() <= '+row["maxEntryAge"].strip()+')) &&' + '\n' +
-		            '\t'.expandtabs(12) + '((riderRequest.getMaturityAge() >= '+row["minMaturityAge"].strip()+') && (riderRequest.getMaturityAge() <= '+row["maxMaturityAge"].strip()+')) &&' + '\n' +
-		            '\t'.expandtabs(12) + '((riderRequest.getRiderPolicyTerm() >= '+row["MinPolicyTerm"].strip()+') && (riderRequest.getRiderPolicyTerm() <= '+row["MaxPolicyTerm"].strip()+')) &&' + '\n' +
-		            '\t'.expandtabs(12) + '((riderRequest.getRiderPremiumPaymentTerm() >= '+row["MinPremiumPaymentTerm"].strip()+') && (riderRequest.getRiderPremiumPaymentTerm() <= '+row["maxPremiumPaymentTerm"].strip()+')) &&' + '\n' +
-		            '\t'.expandtabs(12) + '((riderRequest.getRiderSumAssured() >= '+row["MinSumAssured"].strip()+') && (riderRequest.getRiderSumAssured() <= '+row["MaxSumAssured"].strip()+')) &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getRiderPolicyTerm() <= riderRequest.getBasePlanPolicyTerm() &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getRiderPremiumPaymentTerm() <= riderRequest.getBasePlanPremiumPaymentTerm() &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getRiderSumAssured() <= riderRequest.getBasePlanSumAssured() &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getCurrency() == "'+row["currency"].strip()+'" &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getBroker() == "mashreq" &&' + '\n' +
-		            '\t'.expandtabs(12) + 'riderRequest.getRuleId() == "validateRiders"' + '\n' +
-		        '\t'.expandtabs(8) + ')' + '\n' +
-		    '\t'.expandtabs(4) + 'then' + '\n' +
-		        '\t'.expandtabs(8) + 'ValidRiderResponse validRiderResponse = new ValidRiderResponse();' + '\n' +
-		        '\t'.expandtabs(8) + 'validRiderResponse.setRiderCode(riderRequest.getRiderCode());' + '\n' +
-		        '\t'.expandtabs(8) + 'validRiderResponse.setProductCode(riderRequest.getProductCode());' + '\n' +
-		        '\t'.expandtabs(8) + 'validRiderResponse.setOptionCode(riderRequest.getOptionCode());' + '\n' +
-		        '\t'.expandtabs(8) + 'validRiderResponse.setValid(true);' + '\n' +
-		        '\t'.expandtabs(8) + 'rulesResponse.setRuleResponse(validRiderResponse);' + '\n' +
-		'end\n')
-        
+        row = {k: v.strip() for k, v in row.items()}
+
+        if row["PlanType"] == 'Term':
+            riderSALessThanCheck = '\n' + s12 + 'riderRequest.getRiderSumAssured() <= riderRequest.getBasePlanSumAssured() &&'
+        else:
+            riderSALessThanCheck = ""
+
+        ruleName = ruleNameText.format(row["riderCode"], row["productCode"], row["optionCode"], row["currency"])
+
+        whenRule = whenRuleText.format(
+            row["riderCode"], row["productCode"], row["optionCode"], row["minEntryAge"], row["maxEntryAge"],
+            row["minMaturityAge"], row["maxMaturityAge"], row["MinPolicyTerm"], row["MaxPolicyTerm"],
+            row["MinPremiumPaymentTerm"], row["maxPremiumPaymentTerm"], row["MinSumAssured"], row["MaxSumAssured"],
+            riderSALessThanCheck, row["currency"]
+        )
+
+        print >> f1, (ruleName + whenRule + thenResponse)
+
 f1.close()
 
 
