@@ -5,7 +5,7 @@ import csv
 
 f1=open('./slab_rider_mashreq.java', 'w+')
 
-with open('/Users/vikas/Desktop/RiderSlabs.csv', mode='r') as csv_file:
+with open('/Users/vaibhavsawant/Downloads/Import_Data/Life Rider Masters_Rules - Mashreq - RiderSlabs.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
     line_count = 0
     for row in csv_reader:
