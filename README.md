@@ -9,8 +9,8 @@ https://opensource.com/article/19/5/python-3-default-mac
 
 ### View help Text for any script using (-h) command
 Example:
-python <script_name> -h
+python lifeMain.py -h
 
 ### Run Validation Script using following arguments:
 Example:
-python generateRiderValidationRules.py **-f** /Users/vaibhavsawant/Desktop/RiderValidationRules.csv **-o** ./life_rider_validations_mashreq.java **-b** turtlemint
+python lifeMain.py **-g** validationRules **-f** /Users/vaibhavsawant/Desktop/RiderValidationRules.csv **-o** ./life_rider_validations_turtlemint.java **-b** turtlemint
