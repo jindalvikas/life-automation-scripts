@@ -6,8 +6,10 @@ _Read the complete doc carefully before jumping into installing python3_
 
 https://opensource.com/article/19/5/python-3-default-mac
 
+**File: lifeMain.py**
+will be main entry point to execute all functions
 
-### View help Text for any script using (-h) command
+### View help Text using (-h) command
 Example:
 python lifeMain.py -h
 
