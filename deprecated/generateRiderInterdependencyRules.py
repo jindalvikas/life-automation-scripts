@@ -4,57 +4,48 @@ import csv
 
 f1 = open('./interdependency_rider_mashreq.java', 'w+')
 
-with open('/Users/vaibhavsawant/Downloads/Import_Data/Life Rider Masters_Rules - Mashreq - RiderInterdependency.csv',
-          mode='r') as csv_file:
+with open('./RiderInterdependency.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
-    s8 = ' ' * 8
-    s12 = ' ' * 12
-
-    ruleNameText = 'rule "Mashreq Rider Interdependency - {0}, {1}, {2}"\n'
-
-    whenRuleText = """    when
-        riderRequest:RiderRequest(
-            riderRequest.getRiderCode() == "{0}" &&
-            riderRequest.getProductCode() == "{1}" &&
-            riderRequest.getOptionCode() == "{2}" &&
-            riderRequest.getRuleId() == "interDependentRiders" &&
-            riderRequest.getBroker() == "mashreq"
-        )
-"""
-
-    thenResponseText = """    then
-        InterDependendRiderResponse response = new InterDependendRiderResponse();
-        response.setRiderCode(riderRequest.getRiderCode());
-        response.setProductCode(riderRequest.getProductCode());
-        response.setOptionCode(riderRequest.getOptionCode());
-        ArrayList<String> includedRiders = new ArrayList<>();
-        ArrayList<String> excludedRiders = new ArrayList<>();{}
-        response.setIncludedRiders(includedRiders);
-        response.setExcludedRiders(excludedRiders);
-        rulesResponse.setRuleResponse(response);
-end
-"""
-
+    line_count = 0
     for row in csv_reader:
-        row = {k: v.strip() for k, v in row.items()}
-        ruleName = ruleNameText.format(row["riderCode"], row["productCode"], row["optionCode"])
-        whenRule = whenRuleText.format(row["riderCode"], row["productCode"], row["optionCode"])
+        print >> f1, ('rule "Mashreq Rider Interdependency - ' + row["riderCode"].strip() + ', ' + row[
+            "productCode"].strip() + ', ' + row["optionCode"].strip() + '"' + '\n' +
+                      '\t'.expandtabs(4) + 'when' + '\n' +
+                      '\t'.expandtabs(8) + 'riderRequest:RiderRequest(' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getRiderCode() == "' + row[
+                          "riderCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getProductCode() == "' + row[
+                          "productCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getOptionCode() == "' + row[
+                          "optionCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getRuleId() == "interDependentRiders" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getBroker() == "mashreq"' + '\n' +
+                      '\t'.expandtabs(8) + ')' + '\n' +
+                      '\t'.expandtabs(4) + 'then' + '\n' +
+                      '\t'.expandtabs(
+                          8) + 'InterDependendRiderResponse response = new InterDependendRiderResponse();' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setRiderCode(riderRequest.getRiderCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setProductCode(riderRequest.getProductCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setOptionCode(riderRequest.getOptionCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'ArrayList<String> includedRiders = new ArrayList<>();' + '\n' +
+                      '\t'.expandtabs(8) + 'ArrayList<String> excludedRiders = new ArrayList<>();')
 
-        includedRiderString = row["includedRiders"]
-        excludedRiderString = row["excludedRiders"]
+        includedRiderString = row["includedRiders"].strip()
+        excludedRiderString = row["excludedRiders"].strip()
 
-        thenResponseRidersData = ""
         if includedRiderString is not None and len(includedRiderString) != 0:
             includedRiders = [x.strip() for x in includedRiderString.split(',')]
             for includedRider in includedRiders:
-                thenResponseRidersData += '\n' + s8 + 'includedRiders.add("' + includedRider + '");'
+                print >> f1, ('\t'.expandtabs(8) + 'includedRiders.add("' + includedRider + '");')
 
         if excludedRiderString is not None and len(excludedRiderString) != 0:
             excludedRiders = [x.strip() for x in excludedRiderString.split(',')]
             for excludedRider in excludedRiders:
-                thenResponseRidersData += '\n' + s8 + 'excludedRiders.add("' + excludedRider + '");'
+                print >> f1, ('\t'.expandtabs(8) + 'excludedRiders.add("' + excludedRider + '");')
 
-        thenResponse = thenResponseText.format(thenResponseRidersData)
-        print >> f1, (ruleName + whenRule + thenResponse)
+        print >> f1, ('\t'.expandtabs(8) + 'response.setIncludedRiders(includedRiders);' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setExcludedRiders(excludedRiders);' + '\n' +
+                      '\t'.expandtabs(8) + 'rulesResponse.setRuleResponse(response);' + '\n' +
+                      'end\n')
 
 f1.close()

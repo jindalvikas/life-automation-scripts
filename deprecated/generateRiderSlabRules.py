@@ -1,77 +1,40 @@
 import csv
-import argparse
-
-# Initialize parser
-parser = argparse.ArgumentParser()
-# EXAMPLE
-# python2 generateRiderValidationRules.py -f /Users/vaibhavsawant/Desktop/RiderValidationRules.csv -o ./life_rider_validations_mashreq.java -b turtlemint
-
-# Adding optional argument
-parser.add_argument("-f", "--file_path", help="Input File Path")
-parser.add_argument("-o", "--output_file", help="Output File Path")
-parser.add_argument("-b", "--broker", help="Broker")
-
-# Read arguments from command line
-args = parser.parse_args()
-
-if args.file_path:
-    print("file_path: % s" % args.file_path)
-
-if args.output_file:
-    print("output_file: % s" % args.output_file)
-
-if args.broker:
-    print("broker: % s" % args.broker)
 
 # Below script is for Slabs import
 
-f1 = open(args.output_file, 'w+')
+f1 = open('./slab_rider_mashreq.java', 'w+')
 
-with open(args.file_path, mode='r') as csv_file:
+with open('/Users/vikas/Desktop/RiderSlabs.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
-    s12 = ' ' * 12
-
-    ruleNameText = 'rule "{0} Rider slab - {1}, {2}, {3}, {4}"\n'
-
-    whenRuleText = """    when
-        riderRequest:RiderRequest(
-            riderRequest.getRiderCode() == "{0}" &&
-            riderRequest.getProductCode() == "{1}" &&
-            riderRequest.getOptionCode() == "{2}" &&
-            ((riderRequest.getBasePlanSumAssured() >= {3}) && (riderRequest.getBasePlanSumAssured() <=  {4})) &&
-            riderRequest.getRuleId() == "slab" &&
-            riderRequest.getCurrency() == "{5}" &&
-            riderRequest.getBroker() == "{6}"
-        )
-"""
-
-    thenResponseText = """    then
-        RiderSlabResponse response = new RiderSlabResponse();
-        response.setRiderCode(riderRequest.getRiderCode());
-        response.setProductCode(riderRequest.getProductCode());
-        response.setOptionCode(riderRequest.getOptionCode());
-        response.setRiderSumAssured(Long.valueOf({0}));
-        response.setIsValid(true);
-        rulesResponse.setRuleResponse(response);
-end
-"""
-
-
+    line_count = 0
     for row in csv_reader:
-        row = {k: v.strip() for k, v in row.items()}
-
-        ruleName = ruleNameText.format(args.broker.capitalize(), row["productCode"], row["optionCode"], row["currency"], row["riderCode"])
-
-        whenRule = whenRuleText.format(
-            row["riderCode"], row["productCode"], row["optionCode"], row["minBaseSumAssured"], row["maxBaseSumAssured"],
-            row["currency"], args.broker
-        )
-
-        thenResponse = thenResponseText.format(row["riderDefaultSumAssured"].strip())
-
-        # PYTHON 3
-        print((ruleName + whenRule + thenResponse), file=f1)
-        # PYTHON 2
-        # print >> f1, (ruleName + whenRule + thenResponse)
+        print >> f1, ('rule "Mashreq Rider slab - ' + row["riderCode"].strip() + ', ' + row[
+            "productCode"].strip() + ', ' + row["optionCode"].strip() + ', ' + row["currency"].strip() + '"' + '\n' +
+                      '\t'.expandtabs(4) + 'when' + '\n' +
+                      '\t'.expandtabs(8) + 'riderRequest:RiderRequest(' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getRiderCode() == "' + row[
+                          "riderCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getProductCode() == "' + row[
+                          "productCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getOptionCode() == "' + row[
+                          "optionCode"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + '((riderRequest.getBasePlanSumAssured() >= ' + row[
+                          "minBaseSumAssured"].strip() + ') && (riderRequest.getBasePlanSumAssured() <= ' + row[
+                          "maxBaseSumAssured"].strip() + ')) &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getRuleId() == "slab" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getCurrency() == "' + row[
+                          "currency"].strip() + '" &&' + '\n' +
+                      '\t'.expandtabs(12) + 'riderRequest.getBroker() == "mashreq"' + '\n' +
+                      '\t'.expandtabs(8) + ')' + '\n' +
+                      '\t'.expandtabs(4) + 'then' + '\n' +
+                      '\t'.expandtabs(8) + 'RiderSlabResponse response = new RiderSlabResponse();' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setRiderCode(riderRequest.getRiderCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setProductCode(riderRequest.getProductCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setOptionCode(riderRequest.getOptionCode());' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setRiderSumAssured(Long.valueOf(' + row[
+                          "riderDefaultSumAssured"].strip() + '));' + '\n' +
+                      '\t'.expandtabs(8) + 'response.setIsValid(true);' + '\n' +
+                      '\t'.expandtabs(8) + 'rulesResponse.setRuleResponse(response);' + '\n' +
+                      'end\n')
 
 f1.close()
