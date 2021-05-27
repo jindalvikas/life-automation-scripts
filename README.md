@@ -1,6 +1,6 @@
 # Life Automation Scripts
 
-This project is created for performing repetitive operations like creating thousands of rules for rule engine using a csv.<br/><br/>
+This project is created for performing repetitive operations like creating thousands of rules for rule engine using a csv file.<br/><br/>
 
 ### Use Python 3 to Run the automation scripts
 
