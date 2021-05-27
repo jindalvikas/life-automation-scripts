@@ -69,6 +69,9 @@ end
 
         thenResponse = thenResponseText.format(row["riderDefaultSumAssured"].strip())
 
-        print >> f1, (ruleName + whenRule + thenResponse)
+        # PYTHON 3
+        print((ruleName + whenRule + thenResponse), file=f1)
+        # PYTHON 2
+        # print >> f1, (ruleName + whenRule + thenResponse)
 
 f1.close()
