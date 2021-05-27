@@ -1,6 +1,5 @@
 import csv
 
-
 def generateValidationRules(file_path, output_file, broker):
 # Below is the script for Validation rules
 

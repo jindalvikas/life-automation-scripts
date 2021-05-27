@@ -10,7 +10,7 @@ def generateRiderInterdependencyRules(file_path, output_file, broker):
         s8 = ' ' * 8
         s12 = ' ' * 12
 
-        ruleNameText = 'rule "Mashreq Rider Interdependency - {0}, {1}, {2}"\n'
+        ruleNameText = 'rule "{0} Rider Interdependency - {1}, {2}, {3}"\n'
 
         whenRuleText = """    when
         riderRequest:RiderRequest(
@@ -18,7 +18,7 @@ def generateRiderInterdependencyRules(file_path, output_file, broker):
             riderRequest.getProductCode() == "{1}" &&
             riderRequest.getOptionCode() == "{2}" &&
             riderRequest.getRuleId() == "interDependentRiders" &&
-            riderRequest.getBroker() == "mashreq"
+            riderRequest.getBroker() == "{3}"
         )
 """
 
@@ -37,8 +37,8 @@ end
 
         for row in csv_reader:
             row = {k: v.strip() for k, v in row.items()}
-            ruleName = ruleNameText.format(row["riderCode"], row["productCode"], row["optionCode"])
-            whenRule = whenRuleText.format(row["riderCode"], row["productCode"], row["optionCode"])
+            ruleName = ruleNameText.format(broker.capitalize(), row["riderCode"], row["productCode"], row["optionCode"])
+            whenRule = whenRuleText.format(row["riderCode"], row["productCode"], row["optionCode"], broker)
 
             includedRiderString = row["includedRiders"]
             excludedRiderString = row["excludedRiders"]
