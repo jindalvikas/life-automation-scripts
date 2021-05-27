@@ -1,6 +1,4 @@
 import csv
-
-
 import argparse
 
 # Initialize parser
