@@ -9,7 +9,7 @@ def generateRiderSlabRules(file_path, output_file, broker):
         csv_reader = csv.DictReader(csv_file)
         s12 = ' ' * 12
 
-        ruleNameText = 'rule "{0} Rider slab - {1}, {2}, {3}, {4}"\n'
+        ruleNameText = 'rule "{0} Rider slab - {1}, {2}, {3}, {4}, BP_SA FROM {5} TO {6}"\n'
 
         whenRuleText = """    when
         riderRequest:RiderRequest(
@@ -38,7 +38,7 @@ end
         for row in csv_reader:
             row = {k: v.strip() for k, v in row.items()}
 
-            ruleName = ruleNameText.format(broker.capitalize(), row["productCode"], row["optionCode"], row["currency"], row["riderCode"])
+            ruleName = ruleNameText.format(broker.capitalize(), row["productCode"], row["optionCode"], row["currency"], row["riderCode"], row["minBaseSumAssured"], row["maxBaseSumAssured"])
 
             whenRule = whenRuleText.format(
                 row["riderCode"], row["productCode"], row["optionCode"], row["minBaseSumAssured"], row["maxBaseSumAssured"],
