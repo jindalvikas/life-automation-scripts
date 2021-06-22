@@ -6,7 +6,7 @@ from riderInterdependencyRules import generateRiderInterdependencyRules
 # Initialize parser
 parser = argparse.ArgumentParser()
 # EXAMPLE
-# python lifeMain.py -a generateValidationRules -f /Users/vaibhavsawant/Desktop/RiderValidationRules.csv -o ./life_rider_validations_turtlemint.java -b turtlemint
+# python lifeMain.py -g validationRules -f /Users/vaibhavsawant/Desktop/RiderValidationRules.csv -o ./life_rider_validations_turtlemint.java -b turtlemint
 
 generateChoices = ['validationRules', 'slabRules', 'interdependencyRules']
 
